@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LikeType {
+  LIKE 
+  DISLIKE
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  firstName String  @map("first_name")
+  lastName String  @map("last_name")
+  email String @unique
+  birthDate DateTime? @db.Date  @map("birth_date")
+
+  photoUrl String? @db.Text @map("photo_url")
+  photoPublicId String? @db.Text @map("photo_public_id")
+
+  password String @db.VarChar(256)
+
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime? @default(now()) @map("updated_at")
+
+  posts Post[] @relation("userCreator")
+  postReposted RepostedPost[] @relation("userReposter")
+  comments Comment[] @relation("userComment")
+  postLiked PostLike[] @relation("userLike")
+}
+
+model Post {
+  id String @id @default(cuid())
+  title String @db.VarChar(256)
+  content String @db.Text
+
+  photoUrl String @db.Text @map("photo_url")
+  photoPublicId String @db.Text @map("photo_public_id")
+
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime? @default(now()) @map("updated_at")
+
+  comments Comment[] @relation("commentBelongToPost")
+  reposter RepostedPost[] @relation("postReposted")
+
+  likes PostLike[] @relation("postLike")
+
+  userId Int  @map("user_id")
+  userCreator User @relation("userCreator", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  value String @db.VarChar(500)
+
+  createdAt DateTime @default(now())  @map("created_at")
+  updatedAt DateTime? @default(now()) @map("updated_at")
+
+  userId Int  @map("user_id")
+  postId String  @map("post_id")
+  user User @relation("userComment", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  post Post @relation("commentBelongToPost", fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model PostLike {
+  id Int @id @default(autoincrement())
+
+  type LikeType
+
+  userId Int  @map("user_id")
+  postId String  @map("post_id")
+
+  createdAt DateTime @default(now())  @map("created_at")
+
+  user User @relation("userLike", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  post Post @relation("postLike", fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model RepostedPost {
+  id Int @id @default(autoincrement())
+
+  userId Int  @map("user_id")
+  postId String  @map("post_id")
+
+  createdAt DateTime @default(now())  @map("created_at")
+
+  user User @relation("userReposter", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  post Post @relation("postReposted", fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
