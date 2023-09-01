@@ -156,7 +156,6 @@ export class PostController {
     @Body() dto: UpdatePostDto,
     @Param('id') id: string,
     @Res() response: Response,
-    @Req() request: any,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
@@ -167,9 +166,10 @@ export class PostController {
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
         })
     )
-    picture: Express.Multer.File
+    picture?: Express.Multer.File
   ) {
     try {
       const body = {
