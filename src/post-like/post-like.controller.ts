@@ -38,15 +38,7 @@ export class PostLikeController {
       )
 
       if (postLike) {
-        const deleteComment = await this.postLikeService.remove(postLike.id)
-
-        return response.status(200).json({
-          deleteComment,
-          message: !deleteComment
-            ? 'Data is not found'
-            : 'Data successfully deleted',
-          status: true,
-        })
+        await this.postLikeService.remove(postLike.id)
       }
 
       const body: Prisma.PostLikeCreateInput = {
@@ -64,15 +56,25 @@ export class PostLikeController {
         },
       }
 
-      const newPostLike = await this.postLikeService.create(body)
+      if (postLike?.type !== dto.likeType) {
+        const newPostLike = await this.postLikeService.create(body)
 
-      return response.status(200).json({
-        newPostLike,
-        message: !newPostLike
-          ? 'Data is not found'
-          : 'Data successfully deleted',
-        status: true,
-      })
+        return response.status(200).json({
+          data: newPostLike,
+          type: newPostLike.type,
+          message: !newPostLike
+            ? 'Data is not found'
+            : 'Data successfully liked/disliked',
+          status: true,
+        })
+      } else {
+        return response.status(200).json({
+          data: [],
+          type: postLike.type,
+          message: 'Data successfully unliked/undisliked',
+          status: true,
+        })
+      }
     } catch (error) {
       console.log(error)
       return await this.utilService.catchError(error, response)
