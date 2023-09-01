@@ -128,13 +128,11 @@ export class PostController {
   @Get('/detail/:id')
   async findOne(@Param('id') id: string, @Res() response: Response) {
     try {
-      const position = await this.postService.findOne(id)
+      const data = await this.postService.findOne(id)
 
       return response.status(200).json({
-        position,
-        message: !position
-          ? 'Data is not found.'
-          : 'Data successfully retrieved.',
+        data,
+        message: !data ? 'Data is not found.' : 'Data successfully retrieved.',
         status: true,
       })
     } catch (error) {
