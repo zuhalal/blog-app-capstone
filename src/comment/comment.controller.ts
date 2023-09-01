@@ -9,6 +9,7 @@ import {
   Res,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common'
 import { UtilsService } from 'src/shared/utils/util.service'
 import {
@@ -92,6 +93,29 @@ export class CommentController {
         message: !comment
           ? 'Data is not found.'
           : 'Data successfully retrieved.',
+        status: true,
+      })
+    } catch (error) {
+      console.log(error)
+      return await this.utilService.catchError(error, response)
+    }
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Data successfully retrieved',
+    // type: ResponseFindManyPositionDto,
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('/')
+  async findAll(@Res() response: Response, @Query('post_id') postId: string) {
+    try {
+      const data = postId ? await this.commentService.findAll(postId) : []
+
+      return response.status(200).json({
+        data: data,
+        message:
+          data.length < 0 ? 'Data is Empty.' : 'Data successfully retrieved.',
         status: true,
       })
     } catch (error) {

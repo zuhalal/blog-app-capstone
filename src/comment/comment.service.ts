@@ -10,8 +10,14 @@ export class CommentService {
     return await this.prismaService.comment.create({ data })
   }
 
-  async findAll() {
-    return await this.prismaService.comment.findMany()
+  async findAll(postId: string) {
+    console.log(postId)
+
+    return await this.prismaService.comment.findMany({
+      where: {
+        postId,
+      },
+    })
   }
 
   async findOneByPostId(postId: string) {
