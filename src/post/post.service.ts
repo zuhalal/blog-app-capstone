@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { LikeType, Prisma } from '@prisma/client'
 import { PrismaService } from 'src/shared/providers/prisma.service'
 
 @Injectable()
@@ -11,7 +11,50 @@ export class PostService {
   }
 
   async findAll() {
-    return await this.prismaService.post.findMany()
+    const res = await this.prismaService.post.findMany({
+      include: {
+        likes: true,
+      },
+    })
+
+    return res.map((post) => {
+      const finalRes = {
+        ...post,
+        likeCount: post.likes.filter((like) => like.type === LikeType.LIKE)
+          .length,
+        dislikeCount: post.likes.filter(
+          (like) => like.type === LikeType.DISLIKE
+        ).length,
+      }
+
+      delete finalRes.likes
+      return finalRes
+    })
+  }
+
+  async findAllMyPost(userId: number) {
+    const res = await this.prismaService.post.findMany({
+      include: {
+        likes: true,
+      },
+      where: {
+        userId,
+      },
+    })
+
+    return res.map((post) => {
+      const finalRes = {
+        ...post,
+        likeCount: post.likes.filter((like) => like.type === LikeType.LIKE)
+          .length,
+        dislikeCount: post.likes.filter(
+          (like) => like.type === LikeType.DISLIKE
+        ).length,
+      }
+
+      delete finalRes.likes
+      return finalRes
+    })
   }
 
   async findOne(id: string) {

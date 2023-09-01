@@ -125,7 +125,7 @@ export class PostController {
     // type: ResponseFindPositionDto,
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Get('/:id')
+  @Get('/detail/:id')
   async findOne(@Param('id') id: string, @Res() response: Response) {
     try {
       const position = await this.postService.findOne(id)
@@ -135,6 +135,27 @@ export class PostController {
         message: !position
           ? 'Data is not found.'
           : 'Data successfully retrieved.',
+        status: true,
+      })
+    } catch (error) {
+      console.log(error)
+      return await this.utilService.catchError(error, response)
+    }
+  }
+
+  @Get('/user')
+  async findAllMyPost(
+    @Param('id') id: string,
+    @Res() response: Response,
+    @Req() request: any
+  ) {
+    try {
+      const data = await this.postService.findAllMyPost(request?.user?.userId)
+
+      return response.status(200).json({
+        data: data,
+        message:
+          data.length < 0 ? 'Data is Empty.' : 'Data successfully retrieved.',
         status: true,
       })
     } catch (error) {
