@@ -20,7 +20,7 @@ model User {
   firstName String  @map("first_name")
   lastName String  @map("last_name")
   email String @unique
-  birthDate DateTime? @db.Date  @map("birth_date")
+  bio String? @db.Text  @map("bio")
 
   photoUrl String? @db.Text @map("photo_url")
   photoPublicId String? @db.Text @map("photo_public_id")

@@ -1,1 +1,12 @@
-export class CreateUserDto {}
+import { IsString } from 'class-validator'
+
+export class CreateUserDto {
+  @IsString()
+  firstName: string
+
+  @IsString()
+  lastName: string
+
+  @IsString()
+  bio: string
+}

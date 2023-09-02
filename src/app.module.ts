@@ -16,6 +16,7 @@ import { CommentModule } from './comment/comment.module'
     PostLikeModule,
     RepostedPostModule,
     CommentModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
