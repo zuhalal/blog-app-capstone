@@ -15,6 +15,9 @@ export class PostService {
       include: {
         likes: true,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     })
 
     return res.map((post) => {

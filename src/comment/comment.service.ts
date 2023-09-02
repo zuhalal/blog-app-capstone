@@ -17,6 +17,9 @@ export class CommentService {
       where: {
         postId,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     })
   }
 
