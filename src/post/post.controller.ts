@@ -108,7 +108,7 @@ export class PostController {
       const data = await this.postService.findAll()
 
       return response.status(200).json({
-        data: data,
+        data,
         message:
           data.length < 0 ? 'Data is Empty.' : 'Data successfully retrieved.',
         status: true,
@@ -151,7 +151,7 @@ export class PostController {
       const data = await this.postService.findAllMyPost(request?.user?.userId)
 
       return response.status(200).json({
-        data: data,
+        data,
         message:
           data.length < 0 ? 'Data is Empty.' : 'Data successfully retrieved.',
         status: true,
@@ -250,7 +250,7 @@ export class PostController {
       const deletePost = await this.postService.remove(id)
 
       return response.status(200).json({
-        deletePost,
+        data: deletePost,
         message: !deletePost
           ? 'Data is not found'
           : 'Data successfully deleted',

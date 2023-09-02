@@ -89,7 +89,7 @@ export class CommentController {
       const comment = await this.commentService.findOneByPostId(postId)
 
       return response.status(200).json({
-        comment,
+        data: comment,
         message: !comment
           ? 'Data is not found.'
           : 'Data successfully retrieved.',
@@ -113,7 +113,7 @@ export class CommentController {
       const data = postId ? await this.commentService.findAll(postId) : []
 
       return response.status(200).json({
-        data: data,
+        data,
         message:
           data.length < 0 ? 'Data is Empty.' : 'Data successfully retrieved.',
         status: true,
@@ -167,7 +167,7 @@ export class CommentController {
       const deleteComment = await this.commentService.remove(+id)
 
       return response.status(200).json({
-        deleteComment,
+        data: deleteComment,
         message: !deleteComment
           ? 'Data is not found'
           : 'Data successfully deleted',
