@@ -16,7 +16,7 @@ export class PostService {
         likes: true,
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     })
 
