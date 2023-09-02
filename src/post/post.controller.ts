@@ -13,6 +13,7 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
+  Query,
 } from '@nestjs/common'
 import { PostService } from './post.service'
 import { CreatePostDto } from './dto/create-post.dto'
@@ -103,9 +104,13 @@ export class PostController {
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get('/')
-  async findAll(@Res() response: Response) {
+  async findAll(
+    @Res() response: Response,
+    @Query('page') page = '1',
+    @Query('take') take: string
+  ) {
     try {
-      const data = await this.postService.findAll()
+      const data = await this.postService.findAll(+page, +take)
 
       return response.status(200).json({
         data,

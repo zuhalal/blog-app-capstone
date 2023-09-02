@@ -10,8 +10,10 @@ export class PostService {
     return await this.prismaService.post.create({ data })
   }
 
-  async findAll() {
+  async findAll(page: number, take: number) {
     const res = await this.prismaService.post.findMany({
+      skip: take * (page - 1),
+      take,
       include: {
         likes: true,
       },
